@@ -1,0 +1,16 @@
+﻿<metro:MetroWindow x:Class="培训记录管理软件.ImagePage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:培训记录管理软件"
+        mc:Ignorable="d"
+       xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                   Loaded="MetroWindow_Loaded"
+        Title="Image Upload" Height="350" Width="525">
+    <Grid>
+        <Button Name="SelectImageButton" Content="选择图片" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Margin="10" Click="SelectImageButton_Click"/>
+        <Button Name="UploadImageButton" Content="上传图片" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Margin="120,10,0,0" Click="UploadImageButton_Click"/>
+        <Image Name="SelectedImage" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,50,10,10" Height="200"/>
+    </Grid>
+</metro:MetroWindow>

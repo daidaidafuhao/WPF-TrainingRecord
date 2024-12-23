@@ -1,0 +1,62 @@
+﻿<metro:MetroWindow x:Class="TrainingRecordManager.FilterAndExport"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                   Title="培训档案管理系统" Height="600" Width="950" 
+                   ResizeMode="NoResize"
+                   Loaded="MetroWindow_Loaded"
+                   metro:MetroWindow.GlowBrush="{DynamicResource AccentColorBrush}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Margin="10" Grid.ColumnSpan="2">
+            <TextBlock FontSize="24" FontWeight="Bold" Text="培训分类统计" Margin="0,20,0,10"/>
+
+            <!-- 查询区域 -->
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Stretch">
+                <TextBox x:Name="SearchTrainingContent" Width="200" Margin="0,0,10,0" 
+                      KeyUp="SearchButton_Click" />
+                <TextBox x:Name="SearchTrainingUnit" Width="200" Margin="0,0,10,0" 
+                       KeyUp="SearchButton_Click"  />
+                <TextBox x:Name="SearchTrainingLocation" Width="200" Margin="0,0,10,0" 
+                        KeyUp="SearchButton_Click"  />
+            </StackPanel>
+
+            <!-- 显示分类统计结果 -->
+            <DataGrid x:Name="TrainingSummaryGrid" 
+                      AutoGenerateColumns="False" 
+                      Margin="0,10,0,0" 
+                      Height="300" 
+                      IsReadOnly="True" 
+                      RowHeight="30" 
+                      AlternatingRowBackground="LightGray"
+                      Background="White"
+                      BorderBrush="Gray" 
+                      BorderThickness="1">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="培训内容" Binding="{Binding TrainingContent}"  Width="200"/>
+                    <DataGridTextColumn Header="培训单位" Binding="{Binding TrainingUnit}" Width="200"/>
+                    <DataGridTextColumn Header="培训地点" Binding="{Binding TrainingLocation}" Width="200"/>
+                    <DataGridTextColumn Header="总计" Binding="{Binding Count}" Width="100"/>
+                    <!-- 按钮列 -->
+                    <DataGridTemplateColumn Header="操作" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="导出" Width="80" 
+                                        Click="DetailButton_Click"
+                                        Tag="{Binding}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- 按钮 -->
+            <Button Content="返回人员一览" Margin="0,10,0,0" Click="GoSummaryPage_Click" />
+        </StackPanel>
+    </Grid>
+</metro:MetroWindow>

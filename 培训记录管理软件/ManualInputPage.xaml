@@ -1,0 +1,149 @@
+﻿<metro:MetroWindow x:Class="TrainingRecordManager.ManualInputPage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+
+        xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        Title="培训档案管理系统" Height="650" Width="1300" 
+        ResizeMode="NoResize"
+        Loaded="MetroWindow_Loaded"
+        metro:MetroWindow.GlowBrush="{DynamicResource AccentColorBrush}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Margin="10" Grid.ColumnSpan="2">
+            <TextBlock FontSize="24" FontWeight="Bold" Text="培训档案" Margin="0,0,0,10"/>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Button  x:Name="ImportFileButton" Content="文件导入" Margin="5,0" Click="ImportFile_Click" />
+                <Button x:Name="ManualInputButton" Content="手动录入" Margin="5,0" Click="ManualInput_Click" />
+                <Button x:Name="SeletTableButton" Visibility="Collapsed"  Content="显示已经录入的数据" Margin="5,0" Click="SeletTable_Click" />
+            </StackPanel>
+
+            <StackPanel x:Name="ManualInputPanel" Visibility="Collapsed" Margin="0,10,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- 允许自适应宽度 -->
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="150"/>
+                        <!-- 允许自适应宽度 -->
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- 允许自适应宽度 -->
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- 允许自适应宽度 -->
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- 允许自适应宽度 -->
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="100"/>
+                        <!-- 允许自适应宽度 -->
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- 固定宽度 -->
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="姓名:" VerticalAlignment="Center" Grid.Column="0"/>
+                    <TextBox Margin="5,0" x:Name="NameTextBox" Grid.Column="1" 
+               
+                 PreviewTextInput="NameTextBox_PreviewTextInput" />
+
+                    <TextBlock Text="身份证号:" VerticalAlignment="Center" Grid.Column="2"/>
+                    <TextBox Margin="5,0" x:Name="IdNumberTextBox" Grid.Column="3" 
+                 MaxLength="18" 
+                  KeyUp="IdNumberTextBox_PreviewTextInput" />
+
+                    <TextBlock Text="毕业院校:" VerticalAlignment="Center" Grid.Column="4"/>
+                    <TextBox Margin="5,0" x:Name="EducationTextBox" Grid.Column="5" MaxLength="50"/>
+
+                    <TextBlock Text="职称" VerticalAlignment="Center" Grid.Column="6"/>
+                    <TextBox Margin="5,0" x:Name="TitleTextBox" Grid.Column="7" MaxLength="20"/>
+
+                    <TextBlock Text="等级" VerticalAlignment="Center" Grid.Column="8"/>
+                    <TextBox Margin="5,0" x:Name="LevelTextBox" Grid.Column="9" MaxLength="10"/>
+
+                    <TextBlock Text="单位名称:" VerticalAlignment="Center" Grid.Column="10"/>
+                    <TextBox Margin="5,0" x:Name="UnitNameTextBox" Grid.Column="11" MaxLength="20"/>
+
+                    <TextBlock Text="入职时间:" VerticalAlignment="Center" Grid.Column="12"/>
+                    <TextBox Margin="5,0" x:Name="RuzhiDateTextBox" Grid.Column="13"  MaxLength="30"/>
+
+                    <TextBlock Text="所学专业:" VerticalAlignment="Center" Grid.Column="14"/>
+                    <TextBox Margin="5,0" x:Name="ZhuanYeTextBox" Grid.Column="15" MaxLength="20"/>
+
+                    <TextBlock Text="工种:" VerticalAlignment="Center" Grid.Column="16"/>
+                    <TextBox Margin="5,0" x:Name="LevelJobTypeTextBox" Grid.Column="17" MaxLength="20"/>
+                    
+                    <TextBlock Text="照片:" VerticalAlignment="Center" Grid.Column="18"/>
+                    <Button x:Name="UploadPhotoButton" Content="查看" Margin="5,0" Click="UploadPhoto_Click" Grid.Column="19"/>
+                    <Button  x:Name="AddEmployeeButton"  Content="添加人员" Margin="5,0" Click="AddEmployee_Click" Grid.Column="20"/>
+                    <Button  x:Name="EditEmployeeButton"  Content="编辑人员" Margin="5,0" Click="EditButton_Click" Grid.Column="21"/>
+                </Grid>
+            </StackPanel>
+
+
+
+            <TextBlock FontSize="24" FontWeight="Bold" Text="培训记录" Margin="0,20,0,10"/>
+            <DataGrid x:Name="TrainingRecord" 
+          AutoGenerateColumns="False" 
+          Margin="0,10,0,0" 
+          Height="300" 
+          CanUserAddRows="False" 
+          IsReadOnly="False" 
+          RowHeight="30" 
+          AlternatingRowBackground="LightGray"
+          Background="White"
+          BorderBrush="Gray" 
+          BorderThickness="1">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="序号" Binding="{Binding SerialNumber}" Width="50"/>
+                    <DataGridTextColumn Header="培训时间" Binding="{Binding TrainingDate, StringFormat={}{0:yyyy-MM-dd}}"  Width="100"/>
+                    <DataGridTextColumn Header="培训内容" Binding="{Binding TrainingContent}" Width="150"/>
+                    <DataGridTextColumn Header="培训单位" Binding="{Binding TrainingUnit}" Width="100"/>
+                    <DataGridTextColumn Header="培训地点" Binding="{Binding TrainingLocation}" Width="100"/>
+                    <DataGridTextColumn Header="费用" Binding="{Binding Cost}" Width="100"/>
+                    <DataGridTextColumn Header="备注" Binding="{Binding Remarks}" Width="80"/>
+
+                    <DataGridTemplateColumn Header="删除" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="删除" Click="DeleteButton_Click" Tag="{Binding SerialNumber}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+
+                <DataGrid.Style>
+                    <Style TargetType="DataGrid">
+                        <Setter Property="BorderBrush" Value="#FFCCCCCC"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="RowBackground" Value="White"/>
+                        <Setter Property="AlternatingRowBackground" Value="#F0F0F0"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Foreground" Value="Black"/>
+                    </Style>
+                </DataGrid.Style>
+            </DataGrid>
+
+            <Button  x:Name="AddNewRow" Content="添加新行"  Margin="0,10,0,0" Click="AddNewRow_Click" />
+            <Button  x:Name="AddTrainingRecordButton" Visibility="Collapsed" Content="添加培训记录到表" Margin="0,10,0,0" Click="AddTrainingRecord_Click" />
+            <Button x:Name="GoToHomePageButton"  Margin="0,10,0,0" Click="GoToHomePage_Click" />
+
+        </StackPanel>
+    </Grid>
+
+</metro:MetroWindow>

@@ -1,0 +1,103 @@
+﻿<metro:MetroWindow x:Class="TrainingRecordManager.SummaryPage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Loaded="MetroWindow_Loaded"
+        xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        Title="培训档案管理系统" Height="600" Width="1500" 
+        ResizeMode="NoResize"
+        metro:MetroWindow.GlowBrush="{DynamicResource AccentColorBrush}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Margin="10" Grid.ColumnSpan="2">
+            <TextBlock FontSize="24" FontWeight="Bold" Text="人员档案" Margin="0,20,0,10"/>
+
+            <!-- 添加检索行 -->
+            <Grid Margin="0,10,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="查询条件:" VerticalAlignment="Center" Grid.Column="0"/>
+                <TextBox x:Name="Search1" Margin="5" Grid.Column="1" KeyUp="SearchBox_KeyUp" />
+                <TextBox x:Name="Search2" Margin="5" Grid.Column="2" KeyUp="SearchBox_KeyUp"  />
+                <TextBox x:Name="Search3" Margin="5" Grid.Column="3" KeyUp="SearchBox_KeyUp" />
+                <TextBox x:Name="Search4" Margin="5" Grid.Column="4" KeyUp="SearchBox_KeyUp" />
+                <TextBox x:Name="Search5" Margin="5" Grid.Column="5" KeyUp="SearchBox_KeyUp" />
+               
+                <TextBox x:Name="Search7" Margin="5" Grid.Column="7" KeyUp="SearchBox_KeyUp" />
+                <TextBox x:Name="Search8" Margin="5" Grid.Column="8" KeyUp="SearchBox_KeyUp" />
+                <TextBox x:Name="Search9" Margin="5" Grid.Column="9" KeyUp="SearchBox_KeyUp" />
+            </Grid>
+
+            <!-- 原有 DataGrid -->
+            <DataGrid x:Name="Employee" 
+                      AutoGenerateColumns="False" 
+                      Margin="0,10,0,0" 
+                      Height="300" 
+                      CanUserAddRows="False" 
+                      IsReadOnly="True" 
+                      RowHeight="30" 
+                      AlternatingRowBackground="LightGray"
+                      Background="White"
+                      BorderBrush="Gray" 
+                      BorderThickness="1">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="序号" Binding="{Binding Index}" Width="50"/>
+                    <DataGridTextColumn Header="姓名" Binding="{Binding Name}" Width="100"/>
+                    <DataGridTextColumn Header="身份证号" Binding="{Binding IDCardNumber}" Width="150"/>
+                    <DataGridTextColumn Header="职称" Binding="{Binding Title}" Width="100"/>
+                    <DataGridTextColumn Header="等级级别" Binding="{Binding Level}" Width="100"/>
+                    <DataGridTextColumn Header="单位名称" Binding="{Binding UnitName}" Width="100"/>
+                    <DataGridTextColumn Header="入职时间" Binding="{Binding RuzhiDate, StringFormat={}{0:yyyy-MM-dd}}" Width="100"/>
+                    <DataGridTextColumn Header="毕业院校" Binding="{Binding SchoolName}" Width="100"/>
+                    <DataGridTextColumn Header="所学专业" Binding="{Binding ZhuanYe}" Width="100"/>
+                    <DataGridTextColumn Header="工种" Binding="{Binding LevelJobType}" Width="100"/>
+                    <!-- 新增操作列 -->
+                    <DataGridTemplateColumn Header="操作" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="操作" Click="OperationButton_Click" Tag="{Binding IDCardNumber}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="导出" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="导出" Click="OputDocxButton_Click" Tag="{Binding IDCardNumber}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="删除" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="删除" Click="DeleteButton_Click" Tag="{Binding IDCardNumber}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Button Content="导出全部" Margin="0,10,0,0" Click="OputAllocxButton_Click" />
+            <Button Content="详细导出" Margin="0,10,0,0" Click="GoToFilterAndExport_Click" />
+            <Button Content="返回主页" Margin="0,10,0,0" Click="GoToHomePage_Click" />
+        </StackPanel>
+    </Grid>
+
+</metro:MetroWindow>

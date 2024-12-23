@@ -1,0 +1,17 @@
+﻿<metro:MetroWindow x:Class="TrainingRecordManager.InputExecl"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                   Title="主页" Height="400" Width="600" 
+                   ResizeMode="NoResize"
+                   Loaded="MetroWindow_Loaded"
+                   metro:MetroWindow.GlowBrush="{DynamicResource AccentColorBrush}">
+
+    <Grid>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button Content="导入人员信息" Click="ImportPersons_Click"  Width="150" Margin="10"/>
+            <Button Content="导入培训档案" Click="ImportTrainingRecords_Click"  Width="150" Margin="10"/>
+            <Button Content="返回主页" Click="GoToHomePage_Click"  Width="150" Margin="10"/>
+        </StackPanel>
+    </Grid>
+</metro:MetroWindow>

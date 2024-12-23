@@ -1,0 +1,23 @@
+﻿<metro:MetroWindow x:Class="培训记录管理软件.PopupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:培训记录管理软件"
+        mc:Ignorable="d"
+       xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                   Loaded="MetroWindow_Loaded"
+        Title="错误消息" Height="200" Width="300">
+    <Grid>
+        <TextBlock x:Name="ErrorMessageTextBlock" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center" 
+                   TextWrapping="Wrap" 
+                   Width="250"/>
+        <Button Content="关闭" 
+                HorizontalAlignment="Right" 
+                VerticalAlignment="Bottom" 
+                Click="CloseButton_Click"/>
+    </Grid>
+
+</metro:MetroWindow>
