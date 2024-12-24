@@ -8,10 +8,30 @@
                    metro:MetroWindow.GlowBrush="{DynamicResource AccentColorBrush}">
 
     <Grid>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Button Content="导入人员信息" Click="ImportPersons_Click"  Width="150" Margin="10"/>
-            <Button Content="导入培训档案" Click="ImportTrainingRecords_Click"  Width="150" Margin="10"/>
-            <Button Content="返回主页" Click="GoToHomePage_Click"  Width="150" Margin="10"/>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 第一行按钮 -->
+        <Button Content="导入人员信息" Click="ImportPersons_Click" Width="150" Margin="10" 
+                Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center"/>
+        <Button Content="导出人员模板" Click="ExportPersonTemplate_Click" Width="150" Margin="10" 
+                Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center"/>
+
+        <!-- 第二行按钮 -->
+        <Button Content="导入培训档案" Click="ImportTrainingRecords_Click" Width="150" Margin="10" 
+                Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center"/>
+        <Button Content="导出培训档案模板" Click="ExportTrainingTemplate_Click" Width="150" Margin="10" 
+                Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"/>
+
+        <!-- 第三行按钮 -->
+        <Button Content="返回主页" Click="GoToHomePage_Click" Width="150" Margin="10" 
+                Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
     </Grid>
 </metro:MetroWindow>

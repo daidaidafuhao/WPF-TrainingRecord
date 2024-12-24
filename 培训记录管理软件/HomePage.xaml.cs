@@ -109,13 +109,13 @@ namespace TrainingRecordManager
 
 
                         // 导出人员信息
-                        ExportToExcel(selectedPath + "/PersonnelInfo.xlsx", PersonnelInfolist, new List<string>
+                        ExportToExcel(selectedPath + "/人员信息表.xlsx", PersonnelInfolist, new List<string>
     {
         "单位名称", "姓名", "身份证号", "入职时间", "毕业院校", "所学专业", "职称", "等级", "工种"
     });
 
                         // 导出培训记录
-                        ExportToExcel(selectedPath + "/TrainingInfo.xlsx", TrainingInfolist, new List<string>
+                        ExportToExcel(selectedPath + "/培训记录表.xlsx", TrainingInfolist, new List<string>
     {
         "姓名", "身份证号", "培训时间", "培训地点", "培训单位", "培训内容", "费用", "备注"
     });

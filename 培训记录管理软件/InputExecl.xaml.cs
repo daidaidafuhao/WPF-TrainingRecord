@@ -5,6 +5,7 @@ using OfficeOpenXml;
 using System.IO;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Data.SQLite;
+using 培训记录管理软件;
 
 namespace TrainingRecordManager
 {
@@ -291,13 +292,86 @@ namespace TrainingRecordManager
                 throw new FormatException($"无法将费用转换为数字格式: {costString}");
             }
         }
+        // 导出人员信息模板
+        private void ExportPersonTemplate_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // 创建并显示文件夹选择对话框
+                using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+                {
+                    dialog.Description = "请选择导出文件的目标文件夹";
+                    dialog.ShowNewFolderButton = true;
 
+                    if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        // 获取用户选择的文件夹路径
+                        string selectedPath = dialog.SelectedPath;
+                        List<PersonnelInfo> PersonnelInfolist = new List<PersonnelInfo>();
+                        // 导出人员信息
+                        HomePage.ExportToExcel(selectedPath + "/人员信息模板.xlsx", PersonnelInfolist, new List<string>
+                            { "单位名称", "姓名", "身份证号", "入职时间", "毕业院校", "所学专业", "职称", "等级", "工种"   });
+                    }
+                    else
+                    {
+                        ShowPopu("操作已取消");
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ShowPopu("发生致命错误消息:" + ex.Message);
+            }
+        }
+
+        // 导出培训记录模板
+        private void ExportTrainingTemplate_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // 创建并显示文件夹选择对话框
+                using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+                {
+                    dialog.Description = "请选择导出文件的目标文件夹";
+                    dialog.ShowNewFolderButton = true;
+
+                    if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        // 获取用户选择的文件夹路径
+                        string selectedPath = dialog.SelectedPath;
+                        List<TrainingInfo> TrainingInfolist = new List<TrainingInfo>();
+                       
+                        // 导出培训记录
+                        HomePage.ExportToExcel(selectedPath + "/培训档案模板.xlsx", TrainingInfolist, new List<string>
+                            {"姓名", "身份证号", "培训时间", "培训地点", "培训单位", "培训内容", "费用", "备注"});
+                    }
+                    else
+                    {
+                        ShowPopu("操作已取消");
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ShowPopu("发生致命错误消息:" + ex.Message);
+            }
+
+        }
 
         private void GoToHomePage_Click(object sender, RoutedEventArgs e)
         {
             var homePage = new HomePage();
             homePage.Show();
             this.Close(); // 关闭当前窗口（可选）
+        }
+
+        private void ShowPopu(string errorMessage)
+        {
+            PopupWindow popup = new PopupWindow(errorMessage);
+            popup.Owner = this; // 设置弹出框的拥有者为主窗口
+            popup.ShowDialog(); // 显示模态对话框
         }
     }
 }
