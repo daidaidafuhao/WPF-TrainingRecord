@@ -9,10 +9,10 @@
 
     <Grid>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Button Content="文件录入" Width="150" Margin="10" Click="ImportFileButton_Click"/>
-            <Button Content="手动录入" Width="150" Margin="10" Click="ManualInputButton_Click"/>
-            <Button Content="查看一览" Width="150" Margin="10" Click="ViewSummaryButton_Click"/>
-            <Button Content="导出EXCEL" Width="150" Margin="10" Click="ExportToExcelButton_Click"/>
+            <Button Content="文件录入" Style="{StaticResource CustomButtonStyle}" Width="150" Margin="10" Click="ImportFileButton_Click"/>
+            <Button Content="手动录入" Style="{StaticResource CustomButtonStyle}" Width="150" Margin="10" Click="ManualInputButton_Click"/>
+            <Button Content="查询页面" Style="{StaticResource CustomButtonStyle}"  Width="150" Margin="10" Click="QueryPageyButton_Click"/>
+            <Button Content="导出EXCEL"  Style="{StaticResource CustomButtonStyle}" Width="150" Margin="10" Click="ExportToExcelButton_Click"/>
         </StackPanel>
     </Grid>
 </metro:MetroWindow>

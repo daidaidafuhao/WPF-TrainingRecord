@@ -53,6 +53,14 @@ namespace TrainingRecordManager
             summaryPage.Show();
             this.Close(); // 关闭当前页面（可选）
         }
+
+        private void QueryPageyButton_Click(object sender, RoutedEventArgs e)
+        {
+            // 跳转到查看一览页面
+            var queryPageye = new QueryPage(""); // 确保您已创建该页面
+            queryPageye.Show();
+            this.Close(); // 关闭当前页面（可选）
+        }
         private void ExportToExcelButton_Click(object sender, RoutedEventArgs e)
         {
             try

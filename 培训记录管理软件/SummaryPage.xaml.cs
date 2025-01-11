@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.Controls;
+﻿using ControlzEx;
+using MahApps.Metro.Controls;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -22,15 +23,20 @@ namespace TrainingRecordManager
         DatabaseManager dbManager = new DatabaseManager();
         public SummaryPage()
         {
-            
-
             InitializeComponent();
             EmployeeRecords = new ObservableCollection<Employee>();
             Employee.ItemsSource = EmployeeRecords;
             AddTrainingRecord();
            
         }
+        public SummaryPage(Employee employee, string importTime)
+        {
+            InitializeComponent();
+            EmployeeRecords = new ObservableCollection<Employee>();
+            Employee.ItemsSource = EmployeeRecords;
+            AddTrainingRecord(employee, importTime);
 
+        }
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // 获取屏幕的工作区域
@@ -54,6 +60,42 @@ namespace TrainingRecordManager
             List<Employee> allEmployees = dbManager.GetEmployees();
             foreach (Employee employee in allEmployees)
             { EmployeeRecords.Add((employee)); }
+
+        }
+
+        //根据条件查询
+        private void AddTrainingRecord(Employee employee, string importTime)
+        {
+            EmployeeRecords.Clear();
+
+            // 获取所有在职人员
+            List<Employee> allEmployees = dbManager.SearchEmployees(employee);
+
+            // 获取所有导入记录的身份证号
+            List<ImportHistory> importHistories = dbManager.GetImportHistoriesByImportTime(importTime);
+
+            // 如果 ImportHistory 为空，则直接返回所有员工
+            if (importHistories == null || importHistories.Count == 0)
+            {
+                // 获取批次
+                foreach (Employee e in allEmployees)
+                { EmployeeRecords.Add((e)); }
+                return;
+            }
+
+            // 获取 ImportHistory 中所有的身份证号
+            List<string> importCardNumbers = importHistories
+                .Select(i => i.IDCardNumber)  // 获取 ImportHistory 中的身份证号列表
+                .ToList();
+
+            // 过滤 allEmployees，只保留在 importHistories 中存在的身份证号
+            List<Employee> filteredEmployees = allEmployees
+                .Where(emp => importCardNumbers.Contains(emp.IDCardNumber)) // 过滤条件
+                .ToList();
+
+            // 获取批次
+            foreach (Employee e in filteredEmployees)
+            { EmployeeRecords.Add((e)); }
 
         }
         private void GoToHomePage_Click(object sender, RoutedEventArgs e)
@@ -152,41 +194,19 @@ namespace TrainingRecordManager
         }
 
 
-        private void SearchBox_KeyUp(object sender, KeyEventArgs e)
+        private void QueryButton_Click(object sender, RoutedEventArgs e)
         {
-            try
+            // 跳转到查看一览页面
+            var queryPageye = new QueryPage("SummaryPage"); // 确保您已创建该页面
+            queryPageye.Owner = this; // 设置弹出框的拥有者为主窗口
+                                      // 订阅关闭事件
+            queryPageye.PageClosed += (s, args) =>
             {
-                string search1 = Search1.Text.Trim();
-                string search2 = Search2.Text.Trim();
-                string search3 = Search3.Text.Trim();
-                string search4 = Search4.Text.Trim();
-                string search5 = Search5.Text.Trim();
-                //string search6 = Search6.Text.Trim();
-                string search7 = Search7.Text.Trim();
-                string search8 = Search8.Text.Trim();
-                string search9 = Search9.Text.Trim();
-                // 根据检索条件对数据源进行过滤
-                var filteredData = EmployeeRecords.Where(item =>
-                (string.IsNullOrEmpty(search1) || (item.Name?.Contains(search1) ?? false)) &&
-                (string.IsNullOrEmpty(search2) || (item.IDCardNumber?.Contains(search2) ?? false)) &&
-                (string.IsNullOrEmpty(search3) || (item.Title?.Contains(search3) ?? false)) &&
-                (string.IsNullOrEmpty(search4) || (item.Level?.Contains(search4) ?? false)) &&
-                (string.IsNullOrEmpty(search5) || (item.UnitName?.Contains(search5) ?? false)) &&
-                //(string.IsNullOrEmpty(search6) || item.RuzhiDate.Contains(search6)) &&
-                (string.IsNullOrEmpty(search7) || (item.SchoolName?.Contains(search7) ?? false)) &&
-                (string.IsNullOrEmpty(search8) || (item.ZhuanYe?.Contains(search8) ?? false)) &&
-                (string.IsNullOrEmpty(search9) || (item.LevelJobType?.Contains(search9) ?? false))
-                ).ToList();
-
-
-                // 更新 DataGrid 的 ItemsSource
-                Employee.ItemsSource = filteredData;
-            }
-            catch (Exception ex)
-            {
-                ShowPopu("发生致命错误消息:" + ex.Message);
-            }
-
+                // 关闭当前窗口
+                this.Close();
+            };
+            queryPageye.ShowDialog(); // 显示模态对话框
+           
         }
 
         private void ShowPopu(string errorMessage)
@@ -368,6 +388,7 @@ namespace TrainingRecordManager
             try
             {
                 dbManager.DeleteEmployeeDataByIDCard(data);
+
                 MessageBox.Show($"删除成功：{data}");
              
             }

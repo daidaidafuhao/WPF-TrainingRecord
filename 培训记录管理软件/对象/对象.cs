@@ -15,6 +15,9 @@
         SchoolName
     { get; set; }     // 毕业院校
     public string ZhuanYe { get; set; }     // 所学专业
+
+    public DateTime RuzhiDateStart { get; set; }     // 查询用
+    public DateTime RuzhiDateEnd { get; set; }     // 查询用
 }
 
 public class TrainingRecord
@@ -30,6 +33,16 @@ public class TrainingRecord
     public decimal Cost { get; set; } // 费用
     public string Remarks { get; set; } // 备注
 }
+
+
+public class ImportHistory
+{
+    public int Id { get; set; }
+    public string IDCardNumber { get; set; }
+    public string ImportCount { get; set; }
+    public string ImportTime { get; set; }
+}
+
 
 public class PersonnelInfo
 {

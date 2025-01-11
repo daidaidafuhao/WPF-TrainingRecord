@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="HamburgerMenu.xaml.cs" />
     <Compile Remove="模板\Class3.cs" />
     <Compile Remove="模板\导出全部文件.cs" />
   </ItemGroup>
@@ -28,6 +29,10 @@
 
   <ItemGroup>
     <None Remove="模板\模板.docx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="HamburgerMenu.xaml" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,6 +6,7 @@ using System.IO;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Data.SQLite;
 using 培训记录管理软件;
+using System.Collections.Generic;
 
 namespace TrainingRecordManager
 {
@@ -42,6 +43,17 @@ namespace TrainingRecordManager
             this.Top = top;
         }
 
+        public static string GenerateUniqueNumber()
+        {
+            // 使用当前时间（精确到毫秒）
+            DateTime now = DateTime.Now;
+
+            // 格式化为字符串：年(4位)月(2位)日(2位)小时(2位)分(2位)秒(2位)毫秒(3位)
+            string uniqueNumber = now.ToString("yyyyMMddHHmmssfff");
+
+            return uniqueNumber;
+        }
+
         private void ImportPersons_Click(object sender, RoutedEventArgs e)
         {
             string tempFilePath = "";
@@ -65,10 +77,19 @@ namespace TrainingRecordManager
 
                     // 调用方法读取 Excel 文件
                     employeeList = ReadEmployeesExcelFile(tempFilePath);
-
+                    // 当前时间
+                    string Date = GenerateUniqueNumber();
                     foreach (Employee employee in employeeList)
                     {
+                        ImportHistory importHistory = new ImportHistory{
+
+                            IDCardNumber=employee.IDCardNumber,
+                            ImportCount = Date,
+                            ImportTime = Date
+
+                        }; 
                         _dbManager.InsertOrUpdateEmployee(employee);
+                        _dbManager.InsertOrUpdateImportHistory(importHistory);
                     }
 
                     // 删除临时文件
@@ -106,14 +127,14 @@ namespace TrainingRecordManager
                         MessageBox.Show("文件不存在！");
                         return;
                     }
-
+                    string Date = GenerateUniqueNumber();
                     // 生成临时文件路径
                     tempFilePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(filePath) + Guid.NewGuid().ToString());
                     File.Copy(filePath, tempFilePath);
 
                     // 调用方法读取 Excel 文件
                     (trainingRecords, employeeList) = ReadTrainingRecordExcelFile(tempFilePath);
-
+                    List <ImportHistory> importHistories = new List<ImportHistory>();
                     // 开启事务，确保插入的原子性
                     using (var connection = new SQLiteConnection($"Data Source={_dbManager.DatabaseFilePath};Version=3;"))
                     {
@@ -125,17 +146,36 @@ namespace TrainingRecordManager
                                 // 插入 TrainingRecord 数据
                                 foreach (TrainingRecord trainingRecord in trainingRecords)
                                 {
+                                    ImportHistory importHistory = new ImportHistory
+                                    {
+
+                                        IDCardNumber = trainingRecord.EmployeeId,
+                                        ImportCount = Date,
+                                        ImportTime = Date
+
+                                    };
                                     _dbManager.InsertTrainingRecordOrUpdate(trainingRecord, connection, transaction);
+                                    importHistories.Add(importHistory);
+                                    
                                 }
 
                                 // 插入 Employee 数据
                                 foreach (Employee employee in employeeList)
                                 {
+                                                 
                                     _dbManager.InsertOrUpdateEmployee(employee, connection, transaction);
                                 }
 
+                                foreach(ImportHistory importHistory in importHistories)
+                                {
+                                    _dbManager.InsertOrUpdateImportHistory(importHistory, connection, transaction);
+                                }
+
                                 transaction.Commit(); // 提交事务
-                                MessageBox.Show($"成功导入 {trainingRecords.Count} 条培训记录和 {employeeList.Count} 条员工数据！");
+                                MessageBox.Show($"成功导入 {trainingRecords.Count} 条培训记录和 {employeeList
+                         .Select(e => e.IDCardNumber) // 提取身份证号码
+                         .Distinct() // 去重
+                         .ToList().Count} 条员工数据！");
                             }
                             catch (Exception ex)
                             {
@@ -170,7 +210,7 @@ namespace TrainingRecordManager
             {
                 using (var package = new ExcelPackage(fileStream))
                 {
-                    var worksheet = package.Workbook.Worksheets["Sheet1"]; // 读取第一个工作表
+                    var worksheet = package.Workbook.Worksheets[1]; // 读取第一个工作表
 
                     // 检查第一行是否符合预期格式
                     for (int col = 1; col <= EmployeesExpectedHeaders.Length; col++)
@@ -222,7 +262,7 @@ namespace TrainingRecordManager
             {
                 using (var package = new ExcelPackage(fileStream))
                 {
-                    var worksheet = package.Workbook.Worksheets["Sheet1"]; // 读取第一个工作表
+                    var worksheet = package.Workbook.Worksheets[1]; // 读取第一个工作表
 
                     // 检查第一行是否符合预期格式
                     for (int col = 1; col <= ExpectedHeaders.Length; col++)
@@ -310,7 +350,7 @@ namespace TrainingRecordManager
                         List<PersonnelInfo> PersonnelInfolist = new List<PersonnelInfo>();
                         // 导出人员信息
                         HomePage.ExportToExcel(selectedPath + "/人员信息模板.xlsx", PersonnelInfolist, new List<string>
-                            { "单位名称", "姓名", "身份证号", "入职时间", "毕业院校", "所学专业", "职称", "等级", "工种"   });
+                            { "单位名称", "姓名", "身份证", "入职时间", "毕业院校", "所学专业", "职称", "等级", "工种"   });
                     }
                     else
                     {
@@ -344,7 +384,7 @@ namespace TrainingRecordManager
                        
                         // 导出培训记录
                         HomePage.ExportToExcel(selectedPath + "/培训档案模板.xlsx", TrainingInfolist, new List<string>
-                            {"姓名", "身份证号", "培训时间", "培训地点", "培训单位", "培训内容", "费用", "备注"});
+                            {"姓名", "身份证", "培训时间", "培训地点", "培训单位", "培训内容", "费用", "备注"});
                     }
                     else
                     {
