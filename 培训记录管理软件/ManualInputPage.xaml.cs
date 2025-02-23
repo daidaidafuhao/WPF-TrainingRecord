@@ -1,5 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 using Microsoft.Win32;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -65,13 +66,13 @@ namespace TrainingRecordManager
         
         }
 
-        private void IdNumberTextBox_PreviewTextInput(object sender, KeyEventArgs e)
+        private async void IdNumberTextBox_PreviewTextInput(object sender, KeyEventArgs e)
         {
             if (IdNumberTextBox.Text.Length == 18&& OldIDCardNumber=="")
             {
                 // 如果输入完成就查询是否有培训记录
                 
-                List<TrainingRecord> Records = dbManager.GetTrainingRecordsByEmployeeId(IdNumberTextBox.Text);
+                List<TrainingRecord> Records =  await dbManager.GetTrainingRecordsByEmployeeId(IdNumberTextBox.Text);
                 if (Records.Count > 0) {
                     HideControlsAndDisableInput(IdNumberTextBox.Text);
                     GoToHomePageButton.Visibility = Visibility.Visible;
@@ -105,32 +106,30 @@ namespace TrainingRecordManager
             
         }
 
-        private void AddTrainingRecord_Click(object sender, RoutedEventArgs e)
+        private async void AddTrainingRecord_Click(object sender, RoutedEventArgs e)
         {
             if (IdNumberTextBox.Text.Length == 18)
             {
+                List < TrainingRecord > trainingRecords = new List<TrainingRecord>();
                 foreach (TrainingRecord trainingRecord in TrainingRecords)
                 {
                     trainingRecord.EmployeeId = IdNumberTextBox.Text;
-                    try
-                    {
-                        dbManager.InsertTrainingRecordOrUpdate(trainingRecord);
-                       
-                    }           
-                    catch (Exception ex)
-                    {
-                        ShowPopu("发生致命错误消息:" + ex.Message);
-                    }
-
-              
+                    trainingRecords.Add(trainingRecord);
                 }
-
-                TrainingRecords.Clear();
-                List<TrainingRecord> Records = dbManager.GetTrainingRecordsByEmployeeId(IdNumberTextBox.Text);
-                foreach (TrainingRecord record in Records)
+                try
                 {
-                    TrainingRecords.Add(record);
+                    TrainingRecords.Clear();
+                    List<TrainingRecord> Records = await dbManager.InsertTrainingRecordOrUpdate(trainingRecords);
+                    foreach (TrainingRecord record in Records)
+                    {
+                        TrainingRecords.Add(record);
+                    }
                 }
+                catch (Exception ex)
+                {
+                    ShowPopu("发生致命错误消息:" + ex.Message);
+                }
+                
             }
             else
             {
@@ -158,12 +157,12 @@ namespace TrainingRecordManager
         }
 
 
-        private void SeletTable_Click(object sender, RoutedEventArgs e)
+        private async void SeletTable_Click(object sender, RoutedEventArgs e)
         {
             if (IdNumberTextBox.Text.Length == 18)
             {
                 TrainingRecords.Clear();
-                List<TrainingRecord> Records = dbManager.GetTrainingRecordsByEmployeeId(IdNumberTextBox.Text);
+                List<TrainingRecord> Records = await dbManager.GetTrainingRecordsByEmployeeId(IdNumberTextBox.Text);
                 foreach (TrainingRecord record in Records)
                 {
                     TrainingRecords.Add(record);
@@ -214,15 +213,15 @@ namespace TrainingRecordManager
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(education) || education.Length > 50)
+            if (education.Length > 50)
             {
-                ShowPopu("学历不能为空，且不能超过50个字。");
+                ShowPopu("学历不能超过50个字。");
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(title) || title.Length > 50)
+            if ( title.Length > 50)
             {
-                ShowPopu("职称不能为空，且不能超过50个字。");
+                ShowPopu("职称不能超过50个字。");
                 return;
             }
 
@@ -321,19 +320,19 @@ namespace TrainingRecordManager
                         return;
                     }
 
-                    if (string.IsNullOrWhiteSpace(education) || education.Length > 50)
+                    if ( education.Length > 50)
                     {
-                        ShowPopu("学历不能为空，且不能超过50个字。");
+                        ShowPopu("学历不能超过50个字。");
                         return;
                     }
 
-                    if (string.IsNullOrWhiteSpace(title) || title.Length > 50)
+                    if (title.Length > 50)
                     {
-                        ShowPopu("职称不能为空，且不能超过50个字。");
+                        ShowPopu("职称能超过50个字。");
                         return;
                     }
                     DateTime date;
-                    string[] formats = { "yyyy-MM-dd", "MM/dd/yyyy", "yyyy/MM/dd" }; // 你可以根据需要增加更多的格式
+                    string[] formats = { "yyyy-MM-dd", "MM/dd/yyyy", "yyyy/MM/dd",}; // 你可以根据需要增加更多的格式
                     if (RuzhiDate.Equals("") || !DateTime.TryParseExact(RuzhiDate, formats, null, System.Globalization.DateTimeStyles.None, out date))
                     {
                         ShowPopu("时间不能为且空要注意格式");
@@ -416,10 +415,10 @@ namespace TrainingRecordManager
         }
 
         // 从一览进入
-        private void HideControlsAndDisableInput(string IdNumber)
+        private async void HideControlsAndDisableInput(string IdNumber)
         {
 
-            List<Employee> employees = dbManager.GetEmployees(IdNumber);
+            List<Employee> employees =  await dbManager.GetEmployees(IdNumber);
             // 隐藏按钮
             ImportFileButton.Visibility = Visibility.Collapsed;
             ManualInputButton.Visibility = Visibility.Collapsed;
@@ -468,7 +467,7 @@ namespace TrainingRecordManager
 
             //显示培训记录
             TrainingRecords.Clear();
-            List<TrainingRecord> Records = dbManager.GetTrainingRecordsByEmployeeId(IdNumberTextBox.Text);
+            List<TrainingRecord> Records = await dbManager.GetTrainingRecordsByEmployeeId(IdNumberTextBox.Text);
             foreach (TrainingRecord record in Records)
             {
                 TrainingRecords.Add(record);
@@ -527,7 +526,7 @@ namespace TrainingRecordManager
         }
 
 
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
             if (button == null) return;
@@ -555,7 +554,7 @@ namespace TrainingRecordManager
 
             //显示培训记录
             TrainingRecords.Clear();
-            List<TrainingRecord> Records = dbManager.GetTrainingRecordsByEmployeeId(IdNumberTextBox.Text);
+            List<TrainingRecord> Records = await dbManager.GetTrainingRecordsByEmployeeId(IdNumberTextBox.Text);
             foreach (TrainingRecord record in Records)
             {
                 TrainingRecords.Add(record);

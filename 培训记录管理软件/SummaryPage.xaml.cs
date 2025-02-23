@@ -52,27 +52,27 @@ namespace TrainingRecordManager
             Employee.LostFocus += Employee_LostFocus;
         }
 
-        private void AddTrainingRecord()
+        private async void AddTrainingRecord()
         {
             EmployeeRecords.Clear();
  
             // 获取所有在职人员
-            List<Employee> allEmployees = dbManager.GetEmployees();
+            List<Employee> allEmployees = await dbManager.GetEmployees();
             foreach (Employee employee in allEmployees)
             { EmployeeRecords.Add((employee)); }
 
         }
 
         //根据条件查询
-        private void AddTrainingRecord(Employee employee, string importTime)
+        private async void AddTrainingRecord(Employee employee, string importTime)
         {
             EmployeeRecords.Clear();
 
             // 获取所有在职人员
-            List<Employee> allEmployees = dbManager.SearchEmployees(employee);
+            List<Employee> allEmployees = await dbManager.SearchEmployees(employee);
 
             // 获取所有导入记录的身份证号
-            List<ImportHistory> importHistories = dbManager.GetImportHistoriesByImportTime(importTime);
+            List<ImportHistory> importHistories = await dbManager.GetImportHistoriesByImportTime(importTime);
 
             // 如果 ImportHistory 为空，则直接返回所有员工
             if (importHistories == null || importHistories.Count == 0)
@@ -96,7 +96,6 @@ namespace TrainingRecordManager
             // 获取批次
             foreach (Employee e in filteredEmployees)
             { EmployeeRecords.Add((e)); }
-
         }
         private void GoToHomePage_Click(object sender, RoutedEventArgs e)
         {
@@ -397,52 +396,6 @@ namespace TrainingRecordManager
                 MessageBox.Show($"删除失败：{ex.Message}");
             }
             AddTrainingRecord();
-        }
-
-        private void saveEmployeeRecords2()
-        {
-            // 获取正在编辑的行
-            var row = _editingRow;
-            if (row == null)
-            {
-                MessageBox.Show("未找到正在编辑的行");
-                return;
-            }
-
-            // 获取当前行的每个单元格的值
-            string updatedName = GetCellValue(row, 1);  // 假设姓名在第一列
-            string updatedIDCardNumber = GetCellValue(row, 2);  // 假设身份证号在第二列
-            string updatedTitle = GetCellValue(row, 3);  // 假设职称在第三列
-            string updatedLevel = GetCellValue(row, 4);  // 假设级别在第四列
-            string updatedUnitName = GetCellValue(row, 5);  // 假设单位在第五列
-            // 处理 RuzhiDate 列为时间格式
-            string ruzhiDateStr = GetCellValue(row, 6);  // 假设入职日期在第六列
-            DateTime updatedRuzhiDate = DateTime.TryParse(ruzhiDateStr, out DateTime parsedDate) ? parsedDate : DateTime.MinValue;
-            string updatedSchoolName = GetCellValue(row, 7);  // 假设学校名称在第7列
-            string updatedZhuanYe = GetCellValue(row, 8);  // 假设专业在第七列
-
-            // 创建一个新的Employee对象，更新员工的值
-            Employee updatedEmployee = new Employee
-            {
-                Name = updatedName,
-                IDCardNumber = updatedIDCardNumber,
-                Title = updatedTitle,
-                Level = updatedLevel,
-                UnitName = updatedUnitName,
-                SchoolName = updatedSchoolName,
-                RuzhiDate = updatedRuzhiDate,
-                ZhuanYe = updatedZhuanYe,
-                Education = updatedSchoolName
-            };
-
-            // 调用数据库管理器更新员工及其培训记录
-            dbManager.UpdateEmployeeAndTrainingRecord(updatedEmployee,"");
-
-            // 提示用户保存成功
-            MessageBox.Show("保存成功！");
-
-            // 退出编辑状态
-            CancelEditing();
         }
 
         // 获取单元格的值

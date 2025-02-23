@@ -174,11 +174,11 @@ public class WordDocumentGenerator
 // 使用示例
 public class Program
 {
-    public static void outDocx(string path, string IdNumber)
+    public async static void outDocx(string path, string IdNumber)
     {
         DatabaseManager dbManager = new DatabaseManager();
-        List<Employee> employees = dbManager.GetEmployees(IdNumber);
-        List<TrainingRecord> Records = dbManager.GetTrainingRecordsByEmployeeId(employees[0].IDCardNumber);
+        List<Employee> employees = await dbManager.GetEmployees(IdNumber);
+        List<TrainingRecord> Records = await dbManager.GetTrainingRecordsByEmployeeId(employees[0].IDCardNumber);
         EmployeeInfo employee = new EmployeeInfo
         {
             Name = employees[0].Name,
@@ -193,12 +193,12 @@ public class Program
         generator.CreateTrainingRecordDocument(@path + "/"  + employees[0].Name+ employees[0].IDCardNumber + "的培训记录.docx", employee);
     }
 
-    public static void outAllDocx(string path, List<Employee> employees)
+    public static async void outAllDocx(string path, List<Employee> employees)
     {
         DatabaseManager dbManager = new DatabaseManager();
         foreach(Employee employee in employees)
         {
-            List<TrainingRecord> Records = dbManager.GetTrainingRecordsByEmployeeId(employee.IDCardNumber);
+            List<TrainingRecord> Records = await dbManager.GetTrainingRecordsByEmployeeId(employee.IDCardNumber);
             EmployeeInfo employeefo = new EmployeeInfo
             {
                 Name = employee.Name,

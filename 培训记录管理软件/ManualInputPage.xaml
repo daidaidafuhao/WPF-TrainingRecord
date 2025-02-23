@@ -29,7 +29,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <!-- 允许自适应宽度 -->
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="189"/>
                         <!-- 允许自适应宽度 -->
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -79,7 +79,7 @@
                     <TextBox Margin="5,0" Width="80" Style="{StaticResource ModernTextBoxStyle}" x:Name="UnitNameTextBox" Grid.Column="11" MaxLength="20"/>
 
                     <TextBlock Text="入职时间:" VerticalAlignment="Center" Grid.Column="12"/>
-                    <TextBox Margin="5,0" Width="80" Style="{StaticResource ModernTextBoxStyle}" x:Name="RuzhiDateTextBox" Grid.Column="13"  MaxLength="30"/>
+                    <TextBox Margin="5,0" Width="110" Style="{StaticResource ModernTextBoxStyle}" x:Name="RuzhiDateTextBox" Grid.Column="13"  MaxLength="30"/>
 
                     <TextBlock Text="所学专业:" VerticalAlignment="Center" Grid.Column="14"/>
                     <TextBox Margin="5,0" Width="80" Style="{StaticResource ModernTextBoxStyle}" x:Name="ZhuanYeTextBox" Grid.Column="15" MaxLength="20"/>

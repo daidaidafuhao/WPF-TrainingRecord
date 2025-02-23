@@ -1,24 +1,34 @@
-﻿public class Employee
-{
-    public int Index { get; set; }
-    public string Name { get; set; }        // 姓名
-    public string IDCardNumber { get; set; } // 身份证号
-    public string Photo { get; set; }        // 照片
-    public string Education { get; set; }    // 学历
-    public string Title { get; set; }        // 职称
-    public string Level { get; set; }        // 等级
-    public string LevelJobType { get; set; } // 工种
-    public string Position { get; set; }     // 岗位
-    public string UnitName { get; set; }     // 单位名称
-    public DateTime RuzhiDate { get; set; } // 入职时间
-    public string
-        SchoolName
-    { get; set; }     // 毕业院校
-    public string ZhuanYe { get; set; }     // 所学专业
+﻿using System.ComponentModel.DataAnnotations;
 
-    public DateTime RuzhiDateStart { get; set; }     // 查询用
-    public DateTime RuzhiDateEnd { get; set; }     // 查询用
+public class Employee
+{
+    public int Id { get; set; }
+
+    [MaxLength(50)]
+    public string? Name { get; set; }
+
+    [MaxLength(18)]
+    public string? IDCardNumber { get; set; }
+
+    public string? Photo { get; set; }
+    public string? Education { get; set; }
+    public string? Title { get; set; }
+    public string? Level { get; set; }
+    public string? LevelJobType { get; set; }
+    public string? Position { get; set; }
+    public string? UnitName { get; set; }
+    public DateTime RuzhiDate { get; set; }
+    public string? SchoolName { get; set; }
+    public string? ZhuanYe { get; set; }
+
+    // 用于搜索的额外属性
+    [System.Text.Json.Serialization.JsonIgnore]
+    public DateTime RuzhiDateStart { get; set; }
+
+    [System.Text.Json.Serialization.JsonIgnore]
+    public DateTime RuzhiDateEnd { get; set; }
 }
+
 
 public class TrainingRecord
 {

@@ -16,10 +16,21 @@ namespace TrainingRecordManager
         public FilterAndExport()
         {
             InitializeComponent();
-            // 加载培训记录（实际应用中从数据库获取）
-                        // 模拟数据库数据
-            _trainingRecords= dbManager.GetALLTrainingRecords();
-            LoadTrainingRecords(_trainingRecords);
+            InitializeAsync();
+        }
+
+        private async void InitializeAsync()
+        {
+            try
+            {
+                // 加载培训记录（实际应用中从数据库获取）
+                _trainingRecords = await dbManager.GetALLTrainingRecords();
+                LoadTrainingRecords(_trainingRecords);
+            }
+            catch (Exception ex)
+            {
+                ShowPopu("加载培训记录时发生错误: " + ex.Message);
+            }
         }
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
@@ -86,7 +97,7 @@ namespace TrainingRecordManager
         }
 
         // 详情按钮点击事件
-        private void DetailButton_Click(object sender, RoutedEventArgs e)
+        private async void DetailButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -99,10 +110,10 @@ namespace TrainingRecordManager
                 var trainingUnit = record.GetType().GetProperty("TrainingUnit")?.GetValue(record)?.ToString();
                 var trainingLocation = record.GetType().GetProperty("TrainingLocation")?.GetValue(record)?.ToString();
                 var count = record.GetType().GetProperty("Count")?.GetValue(record)?.ToString();
-                List<TrainingRecord> trainingRecords =  dbManager.GetTrainingRecordsByCriteria(trainingContent, trainingUnit, trainingLocation);
+                List<TrainingRecord> trainingRecords = await dbManager.GetTrainingRecordsByCriteria(trainingContent, trainingUnit, trainingLocation);
                 List < EmployeeInfo > employeefos = new List<EmployeeInfo>();
                 foreach (var trainingRecord in trainingRecords) {
-                    List<Employee> employees = dbManager.GetEmployees(trainingRecord.EmployeeId);
+                    List<Employee> employees = await dbManager.GetEmployees(trainingRecord.EmployeeId);
                     EmployeeInfo employeefo = new EmployeeInfo
                     {
                         Name = employees[0].Name,

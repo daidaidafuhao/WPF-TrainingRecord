@@ -61,7 +61,7 @@ namespace TrainingRecordManager
             queryPageye.Show();
             this.Close(); // 关闭当前页面（可选）
         }
-        private void ExportToExcelButton_Click(object sender, RoutedEventArgs e)
+        private async void ExportToExcelButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -78,8 +78,8 @@ namespace TrainingRecordManager
 
                         List<PersonnelInfo> PersonnelInfolist = new List<PersonnelInfo>();
                         List<TrainingInfo> TrainingInfolist = new List<TrainingInfo>();
-
-                        dbManager.GetEmployees().ForEach(e =>
+                        List<Employee> employees = await dbManager.GetEmployees();
+                        employees.ForEach(e =>
                         {
                             PersonnelInfo ersonnelInfo = new PersonnelInfo
                             {
@@ -96,7 +96,8 @@ namespace TrainingRecordManager
                             };
                             PersonnelInfolist.Add(ersonnelInfo);
                         });
-                        dbManager.GetALLTrainingRecords().ForEach(e =>
+                        List<TrainingRecord> trainingRecords = await dbManager.GetALLTrainingRecords();
+                        trainingRecords.ForEach(e =>
                         {
                             if (PersonnelInfolist.FirstOrDefault(p => p.IDCard .Equals(e.EmployeeId)) != null)
                             {

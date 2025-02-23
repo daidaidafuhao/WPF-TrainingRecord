@@ -63,6 +63,7 @@ namespace TrainingRecordManager
                 if (openFileDialog.ShowDialog() == true)
                 {
                     List<Employee> employeeList = new List<Employee>();
+                    List<ImportHistory> importHistoryList = new List<ImportHistory>();
                     string filePath = openFileDialog.FileName;
 
                     if (!File.Exists(filePath))
@@ -77,6 +78,7 @@ namespace TrainingRecordManager
 
                     // 调用方法读取 Excel 文件
                     employeeList = ReadEmployeesExcelFile(tempFilePath);
+                    _dbManager.InsertOrUpdateEmployee(employeeList);
                     // 当前时间
                     string Date = GenerateUniqueNumber();
                     foreach (Employee employee in employeeList)
@@ -87,11 +89,12 @@ namespace TrainingRecordManager
                             ImportCount = Date,
                             ImportTime = Date
 
-                        }; 
-                        _dbManager.InsertOrUpdateEmployee(employee);
-                        _dbManager.InsertOrUpdateImportHistory(importHistory);
-                    }
+                        };
+                        importHistoryList.Add(importHistory);
 
+
+                    }
+                    _dbManager.InsertOrUpdateImportHistory(importHistoryList);
                     // 删除临时文件
                     File.Delete(tempFilePath);
 
@@ -154,23 +157,16 @@ namespace TrainingRecordManager
                                         ImportTime = Date
 
                                     };
-                                    _dbManager.InsertTrainingRecordOrUpdate(trainingRecord, connection, transaction);
+                                  
                                     importHistories.Add(importHistory);
                                     
                                 }
-
+                                _dbManager.InsertTrainingRecordOrUpdate(trainingRecords);
                                 // 插入 Employee 数据
-                                foreach (Employee employee in employeeList)
-                                {
-                                                 
-                                    _dbManager.InsertOrUpdateEmployee(employee, connection, transaction);
-                                }
 
-                                foreach(ImportHistory importHistory in importHistories)
-                                {
-                                    _dbManager.InsertOrUpdateImportHistory(importHistory, connection, transaction);
-                                }
+                                _dbManager.InsertOrUpdateEmployee(employeeList);
 
+                                _dbManager.InsertOrUpdateImportHistory(importHistories);
                                 transaction.Commit(); // 提交事务
                                 MessageBox.Show($"成功导入 {trainingRecords.Count} 条培训记录和 {employeeList
                          .Select(e => e.IDCardNumber) // 提取身份证号码
@@ -350,7 +346,7 @@ namespace TrainingRecordManager
                         List<PersonnelInfo> PersonnelInfolist = new List<PersonnelInfo>();
                         // 导出人员信息
                         HomePage.ExportToExcel(selectedPath + "/人员信息模板.xlsx", PersonnelInfolist, new List<string>
-                            { "单位名称", "姓名", "身份证", "入职时间", "毕业院校", "所学专业", "职称", "等级", "工种"   });
+                            { "单位名称", "姓名", "身份证", "入职时间", "毕业院校", "所学专业", "职称", "等级级别", "工种" });
                     }
                     else
                     {

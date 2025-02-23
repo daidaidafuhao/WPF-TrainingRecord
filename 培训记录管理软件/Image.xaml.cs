@@ -20,10 +20,15 @@ namespace 培训记录管理软件
         public ImagePage(string IdNumber)
         {
             InitializeComponent();
-            this.IdNumber=IdNumber;
+            this.IdNumber = IdNumber;
+            InitializeAsync();
+        }
+
+        private async void InitializeAsync()
+        {
             try
             {
-                byte[] employeePhoto =   dbManager.GetPhotoByIDCard(IdNumber);
+                byte[] employeePhoto = await dbManager.GetPhotoByIDCard(IdNumber);
 
                 if (employeePhoto != null)
                 { // 使用字节数组创建 MemoryStream
@@ -40,10 +45,9 @@ namespace 培训记录管理软件
                         SelectedImage.Source = bitmapImage;
                     }
                 }
-               
             }
-            catch (Exception ex) {
-
+            catch (Exception ex)
+            {
                 ShowPopu(ex.Message);
             }
         }
