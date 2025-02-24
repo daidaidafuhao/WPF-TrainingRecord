@@ -205,6 +205,56 @@ namespace TrainingRecordManager
             popup.Owner = this; // 设置弹出框的拥有者为主窗口
             popup.ShowDialog(); // 显示模态对话框
         }
+        private void ApiSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // 打开API设置面板
+            ApiSettingsFlyout.IsOpen = true;
+            // 加载已保存的API地址
+            ApiUrlTextBox.Text = dbManager.GetApiUrl();
+        }
+
+        private async void TestApiConnection_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string apiUrl = ApiUrlTextBox.Text.Trim();
+                if (string.IsNullOrEmpty(apiUrl))
+                {
+                    ConnectionStatusText.Text = "请输入API地址";
+                    return;
+                }
+
+                // 测试API连接
+                bool isConnected = await dbManager.TestApiConnection(apiUrl);
+                ConnectionStatusText.Text = isConnected ? "连接成功" : "连接失败";
+            }
+            catch (Exception ex)
+            {
+                ConnectionStatusText.Text = $"连接错误: {ex.Message}";
+            }
+        }
+
+        private void SaveApiSettings_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string apiUrl = ApiUrlTextBox.Text.Trim();
+                if (string.IsNullOrEmpty(apiUrl))
+                {
+                    ShowPopu("请输入API地址");
+                    return;
+                }
+
+                // 保存API地址
+                dbManager.SaveApiUrl(apiUrl);
+                ShowPopu("API设置已保存");
+                ApiSettingsFlyout.IsOpen = false;
+            }
+            catch (Exception ex)
+            {
+                ShowPopu($"保存失败: {ex.Message}");
+            }
+        }
     }
 
 

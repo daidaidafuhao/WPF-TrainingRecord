@@ -139,11 +139,8 @@ namespace TrainingRecordManager
                     (trainingRecords, employeeList) = ReadTrainingRecordExcelFile(tempFilePath);
                     List <ImportHistory> importHistories = new List<ImportHistory>();
                     // 开启事务，确保插入的原子性
-                    using (var connection = new SQLiteConnection($"Data Source={_dbManager.DatabaseFilePath};Version=3;"))
-                    {
-                        connection.Open();
-                        using (var transaction = connection.BeginTransaction()) // 开始事务
-                        {
+               
+                    
                             try
                             {
                                 // 插入 TrainingRecord 数据
@@ -167,7 +164,7 @@ namespace TrainingRecordManager
                                 _dbManager.InsertOrUpdateEmployee(employeeList);
 
                                 _dbManager.InsertOrUpdateImportHistory(importHistories);
-                                transaction.Commit(); // 提交事务
+                                
                                 MessageBox.Show($"成功导入 {trainingRecords.Count} 条培训记录和 {employeeList
                          .Select(e => e.IDCardNumber) // 提取身份证号码
                          .Distinct() // 去重
@@ -175,15 +172,15 @@ namespace TrainingRecordManager
                             }
                             catch (Exception ex)
                             {
-                                transaction.Rollback(); // 回滚事务
+            
                                 MessageBox.Show("导入失败，已回滚数据：" + ex.Message);
                             }
                         }
-                    }
+                  
 
                     // 删除临时文件
                     File.Delete(tempFilePath);
-                }
+               
             }
             catch (Exception ex)
             {
