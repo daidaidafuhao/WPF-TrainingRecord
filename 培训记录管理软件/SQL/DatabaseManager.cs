@@ -15,157 +15,45 @@ public class DatabaseManager
     private string _databaseFilePath;
 
 
-    private static string directory = @"C:\Path\To\Your\Directory"; // 指定文件目录
-    private static string databaseFileName = "TrainingRecords4.db";  // 指定数据库文件名
+ 
     private static string apiBaseUrl = "http://localhost:5115"; // API基础地址
     private static ApiClient _apiClient;
 
-    public string DatabaseFilePath { get => _databaseFilePath; set => _databaseFilePath = value; }
-    public static string Directory { get => directory; set => directory = value; }
-    public static string DatabaseFileName { get => databaseFileName; set => databaseFileName = value; }
+   
     public static string ApiBaseUrl { get => apiBaseUrl; set => apiBaseUrl = value; }
 
     public DatabaseManager()
     {
-        // 指定数据库文件的完整路径
-        DatabaseFilePath = Path.Combine(Directory, DatabaseFileName);
-
-        // 确保目录存在
-        System.IO.Directory.CreateDirectory(Directory);
-
+      
         // 初始化ApiClient
         _apiClient = new ApiClient(ApiBaseUrl);
 
-        // 检查数据库文件是否存在，如果不存在则创建
-        CreateDatabaseIfNotExists();
+      
     }
 
-    private void CreateDatabaseIfNotExists()
-    {
-        // 如果数据库文件不存在，则创建一个新的数据库文件
-        if (!File.Exists(DatabaseFilePath))
-        {
-            SQLiteConnection.CreateFile(DatabaseFilePath);
-            Console.WriteLine("Database file created at: " + DatabaseFilePath);
-            CreateTables();
-        }
-        else
-        {
-            Console.WriteLine("Database file already exists at: " + DatabaseFilePath);
-        }
-    }
-
-    public void LoadComboBoxItems(string query, ComboBox comboBox)
+   
+    public async void LoadComboBoxItems(string query, ComboBox comboBox)
     {
         try
         {
-            using (SQLiteConnection connection = new SQLiteConnection($"Data Source={DatabaseFilePath};Version=3;"))
-            {
-                connection.Open();
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    using (var reader = command.ExecuteReader())
-                    {
-                        // 清空ComboBox，防止重复添加
-                        comboBox.Items.Clear();
 
-                        while (reader.Read())
-                        {
-                            comboBox.Items.Add(reader[0].ToString()); // 假设每个查询结果只有一列
-                        }
+            // 清空ComboBox，防止重复添加
+            comboBox.Items.Clear();
+            // 调用API获取员工列表，传递序列化后的JSON字符串
+            List<string> response = await _apiClient.GetAsync<List<string>>("/api/Database/combobox-items?query="+ query);
+            foreach (string item in response) {
 
-                        reader.Close();
-                    }
-                       
-                }
-                  
-               
+                comboBox.Items.Add(item); // 假设每个查询结果只有一列
             }
         }
         catch (Exception ex)
         {
-            MessageBox.Show("加载数据时出错: " + ex.Message);
-        }
+            MessageBox.Show($"搜索员工时发生错误: {ex.Message}");
+        
+        }        
     }
 
-    private void CreateTables()
-    {
-        using (var connection = new SQLiteConnection($"Data Source={DatabaseFilePath};Version=3;"))
-        {
-            connection.Open();
-
-            // 创建在职人员表
-            string createEmployeeTable = @"
-            CREATE TABLE IF NOT EXISTS Employee (
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Name TEXT NOT NULL,
-                IDCardNumber TEXT NOT NULL UNIQUE,
-                Photo TEXT,
-                Education TEXT,
-                Title TEXT,
-                Level TEXT,
-                LevelJobType TEXT,
-                Position TEXT,
-                UnitName TEXT,
-                RuzhiDate TEXT,
-                SchoolName TEXT,
-                ZhuanYe TEXT
-            );";
-
-            // 创建培训记录表
-            string createTrainingRecordTable = @"
-            CREATE TABLE IF NOT EXISTS TrainingRecord (
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                SerialNumber INTEGER NOT NULL,
-                TrainingDate TEXT NOT NULL,
-                TrainingContent TEXT NOT NULL,
-                TrainingUnit TEXT NOT NULL,
-                TrainingLocation TEXT NOT NULL,
-                Assessment TEXT,
-                Cost REAL,
-                Remarks TEXT,
-                EmployeeId TEXT,
-                FOREIGN KEY (EmployeeId) REFERENCES Employee(Id)
-            );";
-
-            // 创建图片表
-            string createPhotoTable = @"
-            CREATE TABLE IF NOT EXISTS PhotoTable (
-                IDCardNumber TEXT NOT NULL UNIQUE,
-                Photo BLOB
-            );";
-
-            // 创建导入履历表
-            string createImportHistoryTable = @"
-            CREATE TABLE IF NOT EXISTS ImportHistory (
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                IDCardNumber TEXT NOT NULL,
-                ImportCount INTEGER NOT NULL,
-                ImportTime TEXT NOT NULL,
-                FOREIGN KEY (IDCardNumber) REFERENCES Employee(IDCardNumber)
-            );";
-
-            using (var command = new SQLiteCommand(createEmployeeTable, connection))
-            {
-                command.ExecuteNonQuery();
-            }
-
-            using (var command = new SQLiteCommand(createTrainingRecordTable, connection))
-            {
-                command.ExecuteNonQuery();
-            }
-
-            using (var command = new SQLiteCommand(createPhotoTable, connection))
-            {
-                command.ExecuteNonQuery();
-            }
-
-            using (var command = new SQLiteCommand(createImportHistoryTable, connection))
-            {
-                command.ExecuteNonQuery();
-            }
-        }
-    }
+   
 
     public async Task<List<Employee>> SearchEmployees(Employee employeeFilter)
     {
@@ -677,6 +565,32 @@ public class DatabaseManager
             }
 
             MessageBox.Show(errorMessage);
+        }
+    }
+
+
+    public string GetApiUrl()
+    {
+        return ApiBaseUrl;
+    }
+
+    public void SaveApiUrl(string newApiUrl)
+    {
+        ApiBaseUrl = newApiUrl;
+        _apiClient = new ApiClient(ApiBaseUrl);
+    }
+
+    public async Task<bool> TestApiConnection(string apiUrl)
+    {
+        try
+        {
+            var testClient = new ApiClient(apiUrl);
+            await testClient.GetAsync<bool>("/api/Database/test-connection");
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
     
