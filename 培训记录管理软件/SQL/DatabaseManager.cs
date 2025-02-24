@@ -22,6 +22,8 @@ public class DatabaseManager
    
     public static string ApiBaseUrl { get => apiBaseUrl; set => apiBaseUrl = value; }
 
+
+
     public DatabaseManager()
     {
       
@@ -30,8 +32,12 @@ public class DatabaseManager
 
       
     }
+    public static void SetApiClient(ApiClient apiClient)
+    {
+        _apiClient= apiClient;
+    }
 
-   
+
     public async void LoadComboBoxItems(string query, ComboBox comboBox)
     {
         try
@@ -593,6 +599,8 @@ public class DatabaseManager
             return false;
         }
     }
+
+
     
 }
 

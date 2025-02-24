@@ -5,24 +5,34 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Windows;
+using TrainingRecordManager;
 
 public class ApiClient
 {
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
+    private string _token;
 
     public ApiClient(string baseUrl)
-    {
+    {   
         _baseUrl = baseUrl;
         _httpClient = new HttpClient();
         _httpClient.BaseAddress = new Uri(baseUrl);
     }
+
+
 
     private async Task<T> SendRequestAsync<T>(HttpMethod method, string endpoint, String json = null)
     {
         try
         {   
             var request = new HttpRequestMessage(method, endpoint);
+
+            // 添加Authorization请求头G
+            if (!string.IsNullOrEmpty( TokenManager.Instance.GetToken()))
+            {
+                request.Headers.Add("Authorization", $"Bearer {TokenManager.Instance.GetToken()}");
+            }
 
             if (json != null)
             {
