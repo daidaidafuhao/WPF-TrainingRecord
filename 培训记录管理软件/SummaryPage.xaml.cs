@@ -73,13 +73,15 @@ namespace TrainingRecordManager
 
             // 获取所有导入记录的身份证号
             List<ImportHistory> importHistories = await dbManager.GetImportHistoriesByImportTime(importTime);
-
+            int index = 1;
             // 如果 ImportHistory 为空，则直接返回所有员工
             if (importHistories == null || importHistories.Count == 0)
             {
                 // 获取批次
                 foreach (Employee e in allEmployees)
-                { EmployeeRecords.Add((e)); }
+                {
+                    e.Id=(index++).ToString();
+                    EmployeeRecords.Add((e)); }
                 return;
             }
 
@@ -95,7 +97,8 @@ namespace TrainingRecordManager
 
             // 获取批次
             foreach (Employee e in filteredEmployees)
-            { EmployeeRecords.Add((e)); }
+            { e.Id = (index++).ToString(); 
+                EmployeeRecords.Add((e)); }
         }
         private void GoToHomePage_Click(object sender, RoutedEventArgs e)
         {

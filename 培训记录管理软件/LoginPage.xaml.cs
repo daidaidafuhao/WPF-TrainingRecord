@@ -14,7 +14,7 @@ namespace 培训记录管理软件
         public LoginPage()
         {
             InitializeComponent();
-            _apiClient = new ApiClient(DatabaseManager.ApiBaseUrl);
+            _apiClient = new ApiClient();
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)

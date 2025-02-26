@@ -10,14 +10,13 @@ using TrainingRecordManager;
 public class ApiClient
 {
     private readonly HttpClient _httpClient;
-    private readonly string _baseUrl;
     private string _token;
 
-    public ApiClient(string baseUrl)
+    public ApiClient(string baseUrl = null)
     {   
-        _baseUrl = baseUrl;
+        string apiUrl = baseUrl ?? ApiUrlManager.Instance.ApiUrl;
         _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri(baseUrl);
+        _httpClient.BaseAddress = new Uri(apiUrl);
     }
 
 

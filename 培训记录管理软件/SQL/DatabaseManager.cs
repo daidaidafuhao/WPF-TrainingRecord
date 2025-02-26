@@ -16,19 +16,16 @@ public class DatabaseManager
 
 
  
-    private static string apiBaseUrl = "http://localhost:5115"; // API基础地址
     private static ApiClient _apiClient;
 
    
-    public static string ApiBaseUrl { get => apiBaseUrl; set => apiBaseUrl = value; }
-
 
 
     public DatabaseManager()
     {
       
         // 初始化ApiClient
-        _apiClient = new ApiClient(ApiBaseUrl);
+        _apiClient = new ApiClient();
 
       
     }
@@ -575,16 +572,9 @@ public class DatabaseManager
     }
 
 
-    public string GetApiUrl()
-    {
-        return ApiBaseUrl;
-    }
 
-    public void SaveApiUrl(string newApiUrl)
-    {
-        ApiBaseUrl = newApiUrl;
-        _apiClient = new ApiClient(ApiBaseUrl);
-    }
+
+
 
     public async Task<bool> TestApiConnection(string apiUrl)
     {

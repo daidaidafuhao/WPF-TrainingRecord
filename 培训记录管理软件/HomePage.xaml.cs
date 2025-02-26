@@ -210,7 +210,7 @@ namespace TrainingRecordManager
             // 打开API设置面板
             ApiSettingsFlyout.IsOpen = true;
             // 加载已保存的API地址
-            ApiUrlTextBox.Text = dbManager.GetApiUrl();
+            ApiUrlTextBox.Text = ApiUrlManager.Instance.ApiUrl;
         }
 
         private async void TestApiConnection_Click(object sender, RoutedEventArgs e)
@@ -245,8 +245,8 @@ namespace TrainingRecordManager
                     return;
                 }
 
-                // 保存API地址
-                dbManager.SaveApiUrl(apiUrl);
+                // 使用ApiUrlManager保存API地址
+                ApiUrlManager.Instance.SaveApiUrl(apiUrl);
                 ShowPopu("API设置已保存");
                 ApiSettingsFlyout.IsOpen = false;
             }

@@ -28,7 +28,7 @@
                       BorderBrush="Gray" 
                       BorderThickness="1">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="序号" Binding="{Binding Index}" Width="50"/>
+                    <DataGridTextColumn Header="序号" Binding="{Binding Id}" Width="50" CanUserSort="False"/>
                     <DataGridTextColumn Header="姓名" Binding="{Binding Name}" Width="100"/>
                     <DataGridTextColumn Header="身份证号" Binding="{Binding IDCardNumber}" Width="150"/>
                     <DataGridTextColumn Header="职称" Binding="{Binding Title}" Width="100"/>
