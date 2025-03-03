@@ -30,12 +30,46 @@ namespace TrainingRecordManager
             }
             catch (SocketException ex)
             {
-                var errorMessage = ex.SocketErrorCode == SocketError.AccessDenied
-                    ? $"UDP广播管理器初始化失败: 没有足够的权限绑定端口 {BROADCAST_PORT}。请尝试以管理员身份运行程序。"
-                    : $"UDP广播管理器初始化失败: {ex.Message}\n请检查端口 {BROADCAST_PORT} 是否被占用";
-                Console.WriteLine(errorMessage);
-                throw new InvalidOperationException(errorMessage, ex);
+                Console.WriteLine($"UDP广播管理器初始化失败: {ex.Message}，将使用本机地址");
+                SetLocalApiUrl();
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"UDP广播管理器发生未知错误: {ex.Message}，将使用本机地址");
+                SetLocalApiUrl();
+            }
+        }
+
+        private void SetLocalApiUrl()
+        {
+            try
+            {
+                // 获取本机IP地址
+                string localIp = GetLocalIPAddress();
+                var apiUrl = $"http://{localIp}:5115";
+                ApiUrlManager.Instance.SaveApiUrl(apiUrl);
+                Console.WriteLine($"已设置为本机API地址: {apiUrl}");
+            }
+            catch (Exception ex)
+            {
+                // 如果获取本机IP失败，使用localhost
+                var apiUrl = "http://localhost:5115";
+                ApiUrlManager.Instance.SaveApiUrl(apiUrl);
+                Console.WriteLine($"获取本机IP失败，使用localhost: {apiUrl}");
+            }
+        }
+
+        private string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            return "127.0.0.1";
         }
 
         public static UdpBroadcastManager Instance
@@ -92,36 +126,40 @@ namespace TrainingRecordManager
             {
                 while (!_cancellationTokenSource.Token.IsCancellationRequested)
                 {
-                    Console.WriteLine("等待接收UDP响应消息...");
-                    var result = await _udpClient.ReceiveAsync();
-                    var response = Encoding.UTF8.GetString(result.Buffer);
-                    Console.WriteLine($"收到UDP消息: {response} 来自: {result.RemoteEndPoint}");
-
-                    // 过滤掉自己发出的广播消息
-                    if (response == DISCOVERY_MESSAGE)
+                    try
                     {
-                        Console.WriteLine("收到自己发出的广播消息，已忽略");
-                        continue;
-                    }
+                        Console.WriteLine("等待接收UDP响应消息...");
+                        var result = await _udpClient.ReceiveAsync();
+                        var response = Encoding.UTF8.GetString(result.Buffer);
+                        Console.WriteLine($"收到UDP消息: {response} 来自: {result.RemoteEndPoint}");
 
-                    // 只处理来自服务器的响应消息
-                    if (response.StartsWith("Server IP:"))
-                    {
-                        // 解析服务器IP和端口
-                        var parts = response.Split(',');
-                        if (parts.Length == 2)
+                        if (response == DISCOVERY_MESSAGE)
                         {
-                            var ip = parts[0].Replace("Server IP:", "").Trim();
-                            var port = parts[1].Replace("Port:", "").Trim();
+                            Console.WriteLine("收到自己发出的广播消息，已忽略");
+                            continue;
+                        }
 
-                            // 构造API URL
-                            var apiUrl = $"http://{ip}:{port}";
-                            if (!string.IsNullOrEmpty(apiUrl))
+                        if (response.StartsWith("Server IP:"))
+                        {
+                            var parts = response.Split(',');
+                            if (parts.Length == 2)
                             {
-                                ApiUrlManager.Instance.SaveApiUrl(apiUrl);
-                                Console.WriteLine($"已更新API URL: {apiUrl}");
+                                var ip = parts[0].Replace("Server IP:", "").Trim();
+                                var port = parts[1].Replace("Port:", "").Trim();
+                                var apiUrl = $"http://{ip}:{port}";
+                                if (!string.IsNullOrEmpty(apiUrl))
+                                {
+                                    ApiUrlManager.Instance.SaveApiUrl(apiUrl);
+                                    Console.WriteLine($"已更新API URL: {apiUrl}");
+                                }
                             }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"接收UDP消息时发生错误: {ex.Message}，将使用本机地址");
+                        SetLocalApiUrl();
+                        await Task.Delay(5000, _cancellationTokenSource.Token); // 等待5秒后继续尝试
                     }
                 }
             }
@@ -131,7 +169,8 @@ namespace TrainingRecordManager
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"接收响应错误: {ex.Message}");
+                Console.WriteLine($"UDP监听服务发生致命错误: {ex.Message}，将使用本机地址");
+                SetLocalApiUrl();
             }
         }
     }

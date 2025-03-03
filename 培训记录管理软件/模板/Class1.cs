@@ -185,12 +185,12 @@ public class Program
             IDCardNumber = employees[0].IDCardNumber,
             Education = employees[0].Education,
             Title = employees[0].Title,
-            Position = employees[0].Position,
+            Position = employees[0].LevelJobType,
             TrainingRecords = Records
         };
 
-        WordDocumentGenerator generator = new WordDocumentGenerator();
-        generator.CreateTrainingRecordDocument(@path + "/"  + employees[0].Name+ employees[0].IDCardNumber + "的培训记录.docx", employee);
+        TemplateBasedWordGenerator generator = new TemplateBasedWordGenerator();
+        generator.GenerateFromTemplate(@path + "/"  + employees[0].Name+ employees[0].IDCardNumber + "的培训记录.docx", employee);
     }
 
     public static async void outAllDocx(string path, List<Employee> employees)
@@ -205,12 +205,12 @@ public class Program
                 IDCardNumber = employee.IDCardNumber,
                 Education = employee.Education,
                 Title = employee.Title,
-                Position = employee.Position,
+                Position = employee.LevelJobType,
                 TrainingRecords = Records
             };
 
-            WordDocumentGenerator generator = new WordDocumentGenerator();
-            generator.CreateTrainingRecordDocument(@path+"/" + employee.Name+ employee.IDCardNumber + "的培训记录.docx", employeefo);
+            TemplateBasedWordGenerator generator = new TemplateBasedWordGenerator();
+            generator.GenerateFromTemplate(@path+"/" + employee.Name+ employee.IDCardNumber + "的培训记录.docx", employeefo);
 
         }
         
