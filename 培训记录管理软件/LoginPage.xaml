@@ -11,17 +11,34 @@
 
     <Grid Background="#F5F5F5">
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="300">
-            <TextBlock Text="用户登录" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,30"/>
+            <TextBlock Text="培训记录管理系统" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,30"/>
             
             <TextBlock Text="用户名" Margin="0,0,0,5"/>
             <TextBox x:Name="UsernameTextBox" Height="30" Margin="0,0,0,15" Padding="5"/>
             
             <TextBlock Text="密码" Margin="0,0,0,5"/>
-            <PasswordBox x:Name="PasswordBox" Height="30" Margin="0,0,0,20" Padding="5"/>
+            <PasswordBox x:Name="PasswordBox" Height="30" Margin="0,0,0,15" Padding="5"/>
             
-            <Button x:Name="LoginButton" Content="登录" Height="35" Background="#2196F3" Foreground="White" Click="LoginButton_Click"/>
+            <Button x:Name="LoginButton" Content="登录" Height="35" Background="#2196F3" Foreground="White" Click="LoginButton_Click" Margin="0,0,0,10"/>
+            <Button x:Name="ApiSettingsButton" Content="API设置" Height="35" Background="#4CAF50" Foreground="White" Click="ApiSettingsButton_Click"/>
             
             <TextBlock x:Name="ErrorMessage" Foreground="Red" TextWrapping="Wrap" Margin="0,10,0,0" TextAlignment="Center"/>
         </StackPanel>
+
+        <!-- API设置对话框 -->
+        <metro:Flyout x:Name="ApiSettingsFlyout" Position="Right" Width="300">
+            <StackPanel Margin="20">
+                <TextBlock Text="API设置" FontSize="20" Margin="0,0,0,20"/>
+                
+                <TextBlock Text="API地址" Margin="0,0,0,5"/>
+                <TextBox x:Name="ApiUrlTextBox" Height="30" Margin="0,0,0,15" Padding="5"/>
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="TestApiButton" Content="获取API" Height="35" Background="#2196F3" Foreground="White" Click="TestApiButton_Click" Margin="0,0,10,0"/>
+                </StackPanel>
+                
+                <TextBlock x:Name="ApiTestResult" Foreground="Gray" TextWrapping="Wrap" Margin="0,10,0,0"/>
+            </StackPanel>
+        </metro:Flyout>
     </Grid>
 </metro:MetroWindow>

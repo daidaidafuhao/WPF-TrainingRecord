@@ -9,6 +9,7 @@ using System.Windows;
 using System.Text;
 using System.Text.Json;
 using System.Collections.Generic;
+using TrainingRecordManager;
 
 public class DatabaseManager
 {
@@ -71,9 +72,17 @@ public class DatabaseManager
 
             // 将包装后的对象序列化为JSON字符串
             string jsonFilter = JsonSerializer.Serialize(employeeFilter, jsonOptions);
-
+            //List<Employee> r1 = new List<Employee>;
             // 调用API获取员工列表，传递序列化后的JSON字符串
-            var response = await _apiClient.PostAsync<List<Employee>>("/api/Database/employees/search", jsonFilter);
+            List<Employee> response = await _apiClient.PostAsync<List<Employee>>("/api/Database/employees/search", jsonFilter);
+            //foreach (var item in response)
+            //{
+            //    if (item.Position == user.)
+            //    {
+            //        r1.Add(item)
+            //    }
+            //}
+
             return response ?? new List<Employee>();
         }
         catch (Exception ex)
@@ -96,11 +105,18 @@ public class DatabaseManager
 
             // 调用API获取员工列表
             var response = await _apiClient.GetAsync<List<Employee>>("/api/Database/employees?searchTerm="+ searchTerm);
+            
+            // 根据角色过滤结果
+            var role = TokenManager.Instance.GetRole();
+            if(role != null)
+            {
+                response = response?.Where(e => e.UnitName == role).ToList();
+            }
+
             return response ?? new List<Employee>();
         }
         catch (Exception ex)
         {
-
             MessageBox.Show($"获取员工列表时发生错误: {ex.Message}");
             return new List<Employee>();
         }

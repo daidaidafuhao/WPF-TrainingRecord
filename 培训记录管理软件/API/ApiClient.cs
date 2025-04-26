@@ -17,6 +17,9 @@ public class ApiClient
         string apiUrl = baseUrl ?? ApiUrlManager.Instance.ApiUrl;
         _httpClient = new HttpClient();
         _httpClient.BaseAddress = new Uri(apiUrl);
+        // 设置默认请求头
+        _httpClient.DefaultRequestHeaders.Accept.Clear();
+        _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
     }
 
 
@@ -24,10 +27,11 @@ public class ApiClient
     private async Task<T> SendRequestAsync<T>(HttpMethod method, string endpoint, String json = null)
     {
         try
-        {   
+        {
+            // 不再每次请求时修改BaseAddress，而是使用构造函数中设置的值
             var request = new HttpRequestMessage(method, endpoint);
 
-            // 添加Authorization请求头G
+            // 添加Authorization请求头
             if (!string.IsNullOrEmpty( TokenManager.Instance.GetToken()))
             {
                 request.Headers.Add("Authorization", $"Bearer {TokenManager.Instance.GetToken()}");

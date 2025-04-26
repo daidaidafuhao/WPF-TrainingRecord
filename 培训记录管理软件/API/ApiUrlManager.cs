@@ -5,7 +5,7 @@ namespace TrainingRecordManager
     public class ApiUrlManager
     {
         private static readonly ApiUrlManager _instance = new ApiUrlManager();
-        private string _apiUrl = "http://192.168.0.107:5115"; // 默认API地址
+        private string _apiUrl = "http://localhost:5115"; // 默认API地址
 
         private ApiUrlManager() { }
 

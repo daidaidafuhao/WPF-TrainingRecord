@@ -8,6 +8,8 @@ namespace TrainingRecordManager
         private static readonly object _lock = new object();
         private string _token;
 
+        private string _role;
+
         private TokenManager() { }
 
         public static TokenManager Instance
@@ -28,28 +30,34 @@ namespace TrainingRecordManager
             }
         }
 
-        public void SetToken(string token)
+        public void SetTokenAndRole(string token,string role)
         {
             if (string.IsNullOrEmpty(token))
             {
                 throw new ArgumentException("Token不能为空");
             }
             _token = token;
+
+            _role = role;
         }
 
         public string GetToken()
         {
             return _token;
         }
-
+        public string GetRole()
+        {
+            return _role;
+        }
         public bool HasToken()
         {
             return !string.IsNullOrEmpty(_token);
         }
 
-        public void ClearToken()
+        public void ClearAll()
         {
             _token = null;
+             _role = null;
         }
     }
 }

@@ -10,6 +10,9 @@ namespace TrainingRecordManager
 {
     public class UdpBroadcastManager
     {
+        public delegate void ApiServerDiscoveredHandler(string apiUrl);
+        public ApiServerDiscoveredHandler OnApiServerDiscovered;
+
         private static readonly UdpBroadcastManager _instance = new UdpBroadcastManager();
         private readonly UdpClient _udpClient;
         private CancellationTokenSource _cancellationTokenSource;
@@ -83,8 +86,23 @@ namespace TrainingRecordManager
 
             _isRunning = true;
             _cancellationTokenSource = new CancellationTokenSource();
-            Task.Run(BroadcastLoop, _cancellationTokenSource.Token);
             Task.Run(ListenForResponses, _cancellationTokenSource.Token);
+        }
+
+        public async Task SendDiscoveryBroadcast()
+        {
+            try
+            {
+                var discoveryData = Encoding.UTF8.GetBytes(DISCOVERY_MESSAGE);
+                await _udpClient.SendAsync(discoveryData, discoveryData.Length, 
+                    new IPEndPoint(IPAddress.Broadcast, BROADCAST_PORT));
+                Console.WriteLine("已发送UDP广播消息");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"发送广播消息失败: {ex.Message}");
+                throw;
+            }
         }
 
         public void StopDiscovery()
@@ -151,6 +169,7 @@ namespace TrainingRecordManager
                                 {
                                     ApiUrlManager.Instance.SaveApiUrl(apiUrl);
                                     Console.WriteLine($"已更新API URL: {apiUrl}");
+                                    OnApiServerDiscovered?.Invoke(apiUrl);
                                 }
                             }
                         }

@@ -39,26 +39,31 @@ namespace TrainingRecordManager
         // 加载数据到下拉框
         private void LoadComboBoxData()
         {
-
-
-            // 姓名下拉框
-            databaseManager.LoadComboBoxItems("SELECT Name FROM Employee", SearchName);
-            // 身份证号下拉框
-            databaseManager.LoadComboBoxItems("SELECT IdCardNumber FROM Employee", SearchIdCardNumber);
-            // 职位下拉框
-            databaseManager.LoadComboBoxItems("SELECT Title FROM Employee", SearchTitle);
-            // 级别下拉框
-            databaseManager.LoadComboBoxItems("SELECT Level FROM Employee", SearchLevel);
-            // 单位名称下拉框
-            databaseManager.LoadComboBoxItems("SELECT UnitName FROM Employee", SearchUnitName);
-            // 学校名称下拉框
-            databaseManager.LoadComboBoxItems("SELECT SchoolName FROM Employee", SearchSchoolName);
-            // 专业下拉框
-            databaseManager.LoadComboBoxItems("SELECT ZhuanYe FROM Employee", SearchZhuanYe);
-            // 工种
-            databaseManager.LoadComboBoxItems("SELECT LevelJobType FROM Employee", LevelJobType);
-            // 工种
-            databaseManager.LoadComboBoxItems("SELECT DISTINCT ImportTime FROM ImportHistory;", ImportTime);
+            if( TokenManager.Instance.GetRole()==null){
+                // 单位名称下拉框  
+                databaseManager.LoadComboBoxItems("SELECT DISTINCT UnitName FROM Employee", SearchUnitName);
+            }else{
+                  SearchUnitName.Items.Add(TokenManager.Instance.GetRole()); 
+                  SearchUnitName.SelectedItem = TokenManager.Instance.GetRole();
+                  SearchUnitName.IsEnabled = false;  // 设置为不可编辑
+            }
+            // 姓名下拉框  
+            databaseManager.LoadComboBoxItems("SELECT DISTINCT Name FROM Employee", SearchName);
+            // 身份证号下拉框  
+            databaseManager.LoadComboBoxItems("SELECT DISTINCT IdCardNumber FROM Employee", SearchIdCardNumber);
+            // 职位下拉框  
+            databaseManager.LoadComboBoxItems("SELECT DISTINCT Title FROM Employee", SearchTitle);
+            // 级别下拉框  
+            databaseManager.LoadComboBoxItems("SELECT DISTINCT Level FROM Employee", SearchLevel);
+            
+            // 学校名称下拉框  
+            databaseManager.LoadComboBoxItems("SELECT DISTINCT SchoolName FROM Employee", SearchSchoolName);
+            // 专业下拉框  
+            databaseManager.LoadComboBoxItems("SELECT DISTINCT ZhuanYe FROM Employee", SearchZhuanYe);
+            // 工种  
+            databaseManager.LoadComboBoxItems("SELECT DISTINCT LevelJobType FROM Employee", LevelJobType);
+            // 导入时间  
+            databaseManager.LoadComboBoxItems("SELECT DISTINCT ImportTime FROM ImportHistory", ImportTime);
         }
 
         private void GoToHomePage_Click(object sender, RoutedEventArgs e)

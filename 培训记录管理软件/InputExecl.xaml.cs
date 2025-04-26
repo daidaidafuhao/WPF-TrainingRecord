@@ -96,7 +96,7 @@ namespace TrainingRecordManager
                     }
                     _dbManager.InsertOrUpdateImportHistory(importHistoryList);
                     // 删除临时文件
-                    File.Delete(tempFilePath);
+                    //File.Delete(tempFilePath);
 
                     // 显示导入结果（可选）
                     MessageBox.Show($"成功导入 {employeeList.Count} 条员工数据！");
