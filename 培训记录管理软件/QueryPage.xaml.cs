@@ -39,13 +39,31 @@ namespace TrainingRecordManager
         // 加载数据到下拉框
         private void LoadComboBoxData()
         {
-            if( TokenManager.Instance.GetRole()==null){
+            if(TokenManager.Instance.GetRole() == null){
                 // 单位名称下拉框  
                 databaseManager.LoadComboBoxItems("SELECT DISTINCT UnitName FROM Employee", SearchUnitName);
             }else{
-                  SearchUnitName.Items.Add(TokenManager.Instance.GetRole()); 
-                  SearchUnitName.SelectedItem = TokenManager.Instance.GetRole();
-                  SearchUnitName.IsEnabled = false;  // 设置为不可编辑
+                // 获取角色字符串并按下划线分割
+                string rolesString = TokenManager.Instance.GetRole();
+                string[] roles = rolesString.Split('_');
+                
+                // 添加每个角色到下拉框
+                foreach (string role in roles)
+                {
+                    if (!string.IsNullOrWhiteSpace(role))
+                    {
+                        SearchUnitName.Items.Add(role.Trim());
+                    }
+                }
+                
+                // 如果有角色，默认选择第一个
+                if (SearchUnitName.Items.Count > 0)
+                {
+                    SearchUnitName.SelectedIndex = 0;
+                }
+                
+                // 设置为不可编辑，但可以下拉选择
+                SearchUnitName.IsEditable = false;
             }
             // 姓名下拉框  
             databaseManager.LoadComboBoxItems("SELECT DISTINCT Name FROM Employee", SearchName);

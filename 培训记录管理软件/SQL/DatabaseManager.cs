@@ -110,7 +110,10 @@ public class DatabaseManager
             var role = TokenManager.Instance.GetRole();
             if(role != null)
             {
-                response = response?.Where(e => e.UnitName == role).ToList();
+                // 分割角色字符串，获取所有角色
+                string[] roles = role.Split('_');
+                // 过滤结果，只保留单位名称在角色列表中的员工
+                response = response?.Where(e => roles.Any(r => r.Trim() == e.UnitName)).ToList();
             }
 
             return response ?? new List<Employee>();
